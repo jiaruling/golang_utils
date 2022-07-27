@@ -105,7 +105,7 @@ func (c *Client) Request(trace *TraceContext, method, url string, body []byte, m
 }
 
 func (c *Client) RequestSimple(trace *TraceContext, method, url string, body []byte) (data []byte, err error) {
-	return c.Request(trace, method, url, body, 300, nil, JSON)
+	return c.Request(trace, method, url, body, 500, nil, JSON)
 }
 
 func addTrace2Header(request *http.Request, trace *TraceContext) *http.Request {
