@@ -1,4 +1,4 @@
-module github.com/jiaruling/golang_util
+module github.com/jiaruling/golang_utils
 
 go 1.16
 
