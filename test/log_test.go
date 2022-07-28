@@ -1,7 +1,7 @@
 package test
 
 import (
-	"github.com/jiaruling/golang_util/lib"
+	"github.com/jiaruling/golang_utils/lib"
 	"testing"
 )
 
