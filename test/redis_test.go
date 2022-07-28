@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/jiaruling/GolangUtil/lib"
+	"github.com/jiaruling/golang_util/lib"
 
 	"github.com/go-redis/redis/v8"
 )

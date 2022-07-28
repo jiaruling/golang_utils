@@ -2,7 +2,7 @@ package lib
 
 import (
 	"fmt"
-	"github.com/jiaruling/GolangUtil/logs"
+	"github.com/jiaruling/golang_util/logs"
 	"strings"
 
 	"go.uber.org/zap"
