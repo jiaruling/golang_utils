@@ -14,6 +14,7 @@ require (
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/spf13/viper v1.12.0
+	go.mongodb.org/mongo-driver v1.12.1 // indirect
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/multierr v1.8.0 // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0 // indirect
