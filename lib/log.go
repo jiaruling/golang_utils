@@ -102,15 +102,15 @@ func (l *Log) write(trace *TraceContext, dltag string, m map[string]interface{},
 	case zapcore.InfoLevel:
 		su.Info(parseParams(m))
 	case zapcore.WarnLevel:
-		su.Warn(parseParams(m), zap.StackSkip("stack", 3))
+		su.Warn(parseParams(m))
 	case zapcore.ErrorLevel:
-		su.Error(parseParams(m), zap.StackSkip("stack", 3))
+		su.Error(parseParams(m))
 	case zapcore.DPanicLevel:
-		su.DPanic(parseParams(m), zap.StackSkip("stack", 3))
+		su.DPanic(parseParams(m))
 	case zapcore.PanicLevel:
-		su.Panic(parseParams(m), zap.StackSkip("stack", 3))
+		su.Panic(parseParams(m))
 	case zapcore.FatalLevel:
-		su.Fatal(parseParams(m), zap.StackSkip("stack", 3))
+		su.Fatal(parseParams(m))
 	}
 }
 
