@@ -2,8 +2,9 @@ package lib
 
 import (
 	"fmt"
-	"github.com/jiaruling/golang_utils/logs"
 	"strings"
+
+	"github.com/jiaruling/golang_utils/logs"
 
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -101,15 +102,15 @@ func (l *Log) write(trace *TraceContext, dltag string, m map[string]interface{},
 	case zapcore.InfoLevel:
 		su.Info(parseParams(m))
 	case zapcore.WarnLevel:
-		su.Warn(parseParams(m))
+		su.Warn(parseParams(m), zap.StackSkip("stack", 1))
 	case zapcore.ErrorLevel:
-		su.Error(parseParams(m))
+		su.Error(parseParams(m), zap.StackSkip("stack", 1))
 	case zapcore.DPanicLevel:
-		su.DPanic(parseParams(m))
+		su.DPanic(parseParams(m), zap.StackSkip("stack", 1))
 	case zapcore.PanicLevel:
-		su.Panic(parseParams(m))
+		su.Panic(parseParams(m), zap.StackSkip("stack", 1))
 	case zapcore.FatalLevel:
-		su.Fatal(parseParams(m))
+		su.Fatal(parseParams(m), zap.StackSkip("stack", 1))
 	}
 }
 
@@ -121,7 +122,7 @@ func checkDLTag(dltag string) string {
 	return ""
 }
 
-//map格式化为string
+// map格式化为string
 func parseParams(m map[string]interface{}) string {
 	var (
 		dltag string = DLTagUndefind
