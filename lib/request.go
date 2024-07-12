@@ -3,7 +3,7 @@ package lib
 import (
 	"bytes"
 	"errors"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"time"
 )
@@ -11,9 +11,9 @@ import (
 type ContentType string
 
 var (
-	requestMethod = []string{"GET", "POST", "PUT", "DELETE", "HEAD", "CONNECT", "OPTIONS", "TRACE", "PATCH"}
-	FORM ContentType = "application/x-www-form-urlencoded"
-	JSON ContentType = "application/json"
+	requestMethod             = []string{"GET", "POST", "PUT", "DELETE", "HEAD", "CONNECT", "OPTIONS", "TRACE", "PATCH"}
+	FORM          ContentType = "application/x-www-form-urlencoded"
+	JSON          ContentType = "application/json"
 )
 
 type Client struct{}
@@ -83,7 +83,7 @@ func (c *Client) Request(trace *TraceContext, method, url string, body []byte, m
 	}
 	defer response.Body.Close()
 	// 获取响应数据
-	data, err = ioutil.ReadAll(response.Body)
+	data, err = io.ReadAll(response.Body)
 	if err != nil {
 		log.Error(trace, DLTagHTTPFailed, map[string]interface{}{
 			"url":       url,
@@ -105,7 +105,7 @@ func (c *Client) Request(trace *TraceContext, method, url string, body []byte, m
 }
 
 func (c *Client) RequestSimple(trace *TraceContext, method, url string, body []byte) (data []byte, err error) {
-	return c.Request(trace, method, url, body, 500, nil, JSON)
+	return c.Request(trace, method, url, body, 2000, nil, JSON)
 }
 
 func addTrace2Header(request *http.Request, trace *TraceContext) *http.Request {
