@@ -9,7 +9,6 @@ import (
 	"regexp"
 	"strings"
 	"time"
-	"unsafe"
 )
 
 type Tips struct {
@@ -92,7 +91,7 @@ func (t *Tips) StructListToMapList(s interface{}) (mList *[]*map[string]interfac
 func (t *Tips) Sha1UseTimestamp() (shaStr1 string) {
 	timestamp := time.Now().UnixNano()
 	timestampStr := fmt.Sprintf("%d", timestamp)
-	data := t.StringToBytes(timestampStr)
+	data := []byte(timestampStr)
 	has := sha1.Sum(data)
 	shaStr1 = fmt.Sprintf("%x", has) //将[]byte转成16进制
 	return
@@ -101,7 +100,7 @@ func (t *Tips) Sha1UseTimestamp() (shaStr1 string) {
 // 利用随机字符串戳生成SHA1
 func (t *Tips) Sha1UseRandomStr() (shaStr1 string) {
 	r := &Random{}
-	data := t.StringToBytes(r.RandSeqNumberAndletters(20))
+	data := []byte(r.RandSeqNumberAndletters(20))
 	has := sha1.Sum(data)
 	shaStr1 = fmt.Sprintf("%x", has) //将[]byte转成16进制
 	return
@@ -109,26 +108,26 @@ func (t *Tips) Sha1UseRandomStr() (shaStr1 string) {
 
 // 利用指定参数生成SHA1
 func (t *Tips) Sha1UseParameter(s string) (shaStr1 string) {
-	data := t.StringToBytes(s)
+	data := []byte(s)
 	has := sha1.Sum(data)
 	shaStr1 = fmt.Sprintf("%x", has) //将[]byte转成16进制
 	return
 }
 
-// StringToBytes 实现string 转换成 []byte, 不用额外的内存分配
-func (t *Tips) StringToBytes(str string) (bytes []byte) {
-	ss := *(*reflect.StringHeader)(unsafe.Pointer(&str))
-	bs := (*reflect.SliceHeader)(unsafe.Pointer(&bytes))
-	bs.Data = ss.Data
-	bs.Len = ss.Len
-	bs.Cap = ss.Len
-	return bytes
-}
+// // StringToBytes 实现string 转换成 []byte, 不用额外的内存分配
+// func (t *Tips) StringToBytes(str string) (bytes []byte) {
+// 	ss := *(*reflect.StringHeader)(unsafe.Pointer(&str))
+// 	bs := (*reflect.SliceHeader)(unsafe.Pointer(&bytes))
+// 	bs.Data = ss.Data
+// 	bs.Len = ss.Len
+// 	bs.Cap = ss.Len
+// 	return bytes
+// }
 
-// BytesToString 实现 []byte 转换成 string, 不需要额外的内存分配
-func (t *Tips) BytesToString(bytes []byte) string {
-	return *(*string)(unsafe.Pointer(&bytes))
-}
+// // BytesToString 实现 []byte 转换成 string, 不需要额外的内存分配
+// func (t *Tips) BytesToString(bytes []byte) string {
+// 	return *(*string)(unsafe.Pointer(&bytes))
+// }
 
 // 拼接url
 
