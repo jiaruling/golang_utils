@@ -14,6 +14,7 @@ var (
 	requestMethod             = []string{"GET", "POST", "PUT", "DELETE", "HEAD", "CONNECT", "OPTIONS", "TRACE", "PATCH"}
 	FORM          ContentType = "application/x-www-form-urlencoded"
 	JSON          ContentType = "application/json"
+	XML           ContentType = "application/xml"
 )
 
 type Client struct{}
@@ -25,41 +26,24 @@ func (c *Client) Request(trace *TraceContext, method, url string, body []byte, m
 	if trace == nil {
 		trace = NewTrace()
 	}
-
+	log.Info(trace, DLTagHTTPInfo, map[string]interface{}{
+		"url":     url,
+		"method":  method,
+		"request": string(body),
+	})
 	t := CreateTips()
 	if !t.InStr(method, requestMethod) {
-		log.Error(trace, DLTagHTTPFailed, map[string]interface{}{
-			"url":       url,
-			"proc_time": float32(time.Now().UnixNano()-startTime) / 1.0e9,
-			"method":    method,
-			"hint":      "<request>: 请求方式不合法！",
-			"hint_code": 4001,
-		})
-		return nil, errors.New("")
+		return nil, errors.New("请求方式不合法")
 	}
 	if url == "" {
-		log.Error(trace, DLTagHTTPFailed, map[string]interface{}{
-			"url":       url,
-			"proc_time": float32(time.Now().UnixNano()-startTime) / 1.0e9,
-			"method":    method,
-			"hint":      "<request>: 请求地址不能为空！",
-			"hint_code": 4002,
-		})
-		return nil, errors.New("")
+		return nil, errors.New("请求地址不能为空")
 	}
 	url = t.SpliceUrl(url)
 	req, err := http.NewRequest(method, t.SpliceUrl(url), bytes.NewReader(body))
 	if err != nil {
-		log.Error(trace, DLTagHTTPFailed, map[string]interface{}{
-			"url":       url,
-			"proc_time": float32(time.Now().UnixNano()-startTime) / 1.0e9,
-			"method":    method,
-			"hint":      "<request>: 初始化请求信息失败",
-			"hint_code": 4003,
-			"error":     err.Error(),
-		})
-		return nil, errors.New("")
+		return nil, errors.New("初始化请求信息失败")
 	}
+
 	// 设置请求头
 	if len(header) > 0 {
 		req.Header = header
@@ -71,34 +55,17 @@ func (c *Client) Request(trace *TraceContext, method, url string, body []byte, m
 	client := &http.Client{Timeout: time.Duration(msTimeout) * time.Millisecond}
 	response, err := client.Do(req)
 	if err != nil {
-		log.Error(trace, DLTagHTTPFailed, map[string]interface{}{
-			"url":       url,
-			"proc_time": float32(time.Now().UnixNano()-startTime) / 1.0e9,
-			"method":    method,
-			"hint":      "<request>: http请求失败",
-			"hint_code": 4004,
-			"error":     err.Error(),
-		})
-		return nil, errors.New("")
+		return nil, err
 	}
 	defer response.Body.Close()
 	// 获取响应数据
 	data, err = io.ReadAll(response.Body)
 	if err != nil {
-		log.Error(trace, DLTagHTTPFailed, map[string]interface{}{
-			"url":       url,
-			"proc_time": float32(time.Now().UnixNano()-startTime) / 1.0e9,
-			"method":    method,
-			"hint":      "<request>: 获取响应数据失败",
-			"hint_code": 4005,
-			"error":     err.Error(),
-		})
-		return nil, errors.New("")
+		return nil, err
 	}
 	log.Info(trace, DLTagHTTPSuccess, map[string]interface{}{
 		"url":       url,
 		"proc_time": float32(time.Now().UnixNano()-startTime) / 1.0e9,
-		"method":    method,
 		"result":    string(data),
 	})
 	return data, nil
