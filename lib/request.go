@@ -17,9 +17,13 @@ var (
 	XML           ContentType = "application/xml"
 )
 
-type Client struct{}
+type HttpClient struct{}
 
-func (c *Client) Request(trace *TraceContext, method, url string, body []byte, msTimeout int, header http.Header, contentType ContentType) (data []byte, err error) {
+func NewHttpClient() *HttpClient {
+	return &HttpClient{}
+}
+
+func (c *HttpClient) Request(trace *TraceContext, method, url string, body []byte, msTimeout int, header http.Header, contentType ContentType) (data []byte, err error) {
 	startTime := time.Now().UnixNano()
 	// 链路日志
 	log := GetLog()
@@ -31,7 +35,7 @@ func (c *Client) Request(trace *TraceContext, method, url string, body []byte, m
 		"method":  method,
 		"request": string(body),
 	})
-	t := CreateTips()
+	t := NewTips()
 	if !t.InStr(method, requestMethod) {
 		return nil, errors.New("请求方式不合法")
 	}
@@ -71,7 +75,7 @@ func (c *Client) Request(trace *TraceContext, method, url string, body []byte, m
 	return data, nil
 }
 
-func (c *Client) RequestSimple(trace *TraceContext, method, url string, body []byte) (data []byte, err error) {
+func (c *HttpClient) RequestSimple(trace *TraceContext, method, url string, body []byte) (data []byte, err error) {
 	return c.Request(trace, method, url, body, 2000, nil, JSON)
 }
 

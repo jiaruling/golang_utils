@@ -19,3 +19,4 @@
 *.logs
 static/
 log/
+*.pem

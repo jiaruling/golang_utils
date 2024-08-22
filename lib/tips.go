@@ -16,7 +16,7 @@ type Tips struct {
 	Random
 }
 
-func CreateTips() *Tips {
+func NewTips() *Tips {
 	return &Tips{
 		InSlice: InSlice{},
 		Random:  Random{},
